@@ -1,0 +1,77 @@
+language: cpp
+sudo: required
+dist: trusty
+
+addons:
+  apt:
+    packages:
+    - nsis
+    - cmake
+    - xvfb
+    - swig
+    - beep
+
+before_install:
+  - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
+  - sudo dpkg --add-architecture i386 && sudo rm /etc/apt/sources.list.d/google-chrome.list
+  - sudo apt-get update -q
+
+install:
+  - sudo apt-get install wine1.8 beep -y
+  - sudo wget -N https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -P /usr/bin
+
+before_script:
+  - wget http://downloads.sourceforge.net/openturns/openturns/openturns-1.7/dev/openturns-developers-windeps-1.7.tar.gz -P /tmp
+
+script:
+  - git clone https://github.com/openturns/openturns.git
+  - pushd openturns
+  - git checkout v1.7
+  - pushd distro/windows
+  - tar xzf /tmp/openturns-developers-windeps-1.7.tar.gz
+  - make ot-module-installer ARCH=$ARCH PYBASEVER=$PYBASEVER JOBS=4
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+  - popd
+  - popd
+  - git clone https://github.com/openturns/otrobopt.git
+  - pushd otrobopt
+  - pushd distro/windows
+  - make ARCH=$ARCH PYBASEVER=$PYBASEVER JOBS=4 CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+  - popd
+  - popd
+  - git clone https://github.com/openturns/otmorris.git
+  - pushd otmorris
+  - pushd distro/windows
+  - make ARCH=$ARCH PYBASEVER=$PYBASEVER JOBS=4 CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+  - popd
+  - popd
+  - git clone https://github.com/openturns/otsvm.git
+  - pushd otsvm
+  - wget https://github.com/openturns/otsvm/pull/8.patch --no-check-certificate
+  - pushd distro/windows
+  - make ARCH=$ARCH PYBASEVER=$PYBASEVER JOBS=4 CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+
+env:
+  matrix:
+    - ARCH=i686   PYBASEVER=2.7
+    - ARCH=i686   PYBASEVER=3.4
+    - ARCH=i686   PYBASEVER=3.5
+    - ARCH=x86_64 PYBASEVER=2.7
+    - ARCH=x86_64 PYBASEVER=3.4
+    - ARCH=x86_64 PYBASEVER=3.5
+
+deploy:
+  provider: releases
+  api_key:
+    secure: iNVr4PFEXqxBKhMcB4bAdj+NcKMd4a7t6y0LawnSXnVaF6cWdcEXvCJ9U1sMu4nfMpUDFiwEPEHM32DybkDoWcIv2NCP/qSECAzeXB0UqZDK74ngS9e3/oCKtXHs5xzy4JLqgiRvHmTUd3PzkSi/MC5t+ELhr8HYe/kMwlEZBhkoq6S9LvPmDarXl3tHbWj7/E0pmJ15YWhQu9C/turJCbgGQUwqX1eW/MnHETPL7DGNP/uXHN4nExZCsdKJ261FuEC80wVztvzyaWAkjRK2MrfmlO9omixDRVujaAWs6yTHW4dU9lFxtMF2OnSGQRX1hOOsxBwKQTQBHItgtq/jKPw73rK1Awui/R89CqVz5NDVjTVOD2sRFpobOpDeb3jf2IccfcCAUtPEqE9Tgbil9fu+WlhwSD6pbO5mu1h2iRORbIztdoPSNADsbPqFH/+zC5/rvTW/kwhAe2CBR5JROLL12n5Dg3R2siP8/E512ZHeuskS3QWJtJ0QFqZRrROGx5G7Fgwf5pRUC58BYhd6H7hVcRYUL/eTFye6urCybVsiFZZDUGiTqYD9RVHF6/JhNyKg9MdReiu7fBX9bR7/bnSm755iIZDQexnuALvcZkEYVa13SuMxLZjCRDJhnbnz1Ni0UUTgmp9L/VILWvyjfISI41qSNaeyI2SFWOfLe/8=
+  file:
+    - ${TRAVIS_BUILD_DIR}/openturns-1.7-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otmorris-0.0-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otrobopt-0.0-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otsvm-0.1i-py${PYBASEVER}-${ARCH}.exe
+  skip_cleanup: true
+  on:
+    tags: true
