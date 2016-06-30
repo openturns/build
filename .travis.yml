@@ -9,6 +9,11 @@ addons:
     - cmake
     - xvfb
     - swig
+    - texlive-latex-recommended
+    - texlive-fonts-recommended
+    - texlive-latex-extra
+    - texlive-science
+    - dvipng
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
@@ -25,34 +30,66 @@ before_script:
 script:
   - git clone https://github.com/openturns/openturns.git
   - pushd openturns
-#   - git checkout v1.8rc1
+  - git checkout v1.8rc1
   - pushd distro/windows
   - tar xzf /tmp/openturns-developers-windeps-1.8.tar.gz
-  - make ot-module-installer PYBASEVER=$PYBASEVER ARCH=$ARCH JOBS=4
+  - make ot-module-installer PYBASEVER=$PYBASEVER ARCH=$ARCH
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+  - popd
+  - popd
+  - git clone https://github.com/openturns/otfftw.git
+  - pushd otfftw
+  - git checkout v0.3
+  - pushd distro/windows
+  - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+  - popd
+  - popd
+  - git clone https://github.com/openturns/otlhs.git
+  - pushd otlhs
+  - git checkout v1.3
+  - pushd distro/windows
+  - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
   - cp -v *.exe ${TRAVIS_BUILD_DIR}
   - popd
   - popd
   - git clone https://github.com/openturns/otmorris.git
   - pushd otmorris
-#   - git checkout v0.1
+  - git checkout v0.1
   - pushd distro/windows
-  - make PYBASEVER=$PYBASEVER ARCH=$ARCH JOBS=4 CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
   - cp -v *.exe ${TRAVIS_BUILD_DIR}
   - popd
   - popd
+  - git clone https://github.com/openturns/otpmml.git
+  - pushd otpmml
+  - git checkout v1.3
+  - pushd distro/windows
+  - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+  - popd
+  - popd
+#   - git clone https://github.com/openturns/otmorris.git
+#   - pushd otmorris
+#   - git checkout v0.1
+#   - pushd distro/windows
+#   - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+#   - cp -v *.exe ${TRAVIS_BUILD_DIR}
+#   - popd
+#   - popd
   - git clone https://github.com/openturns/otrobopt.git
   - pushd otrobopt
-#   - git checkout v0.1
+  - git checkout v0.1
   - pushd distro/windows
-  - make PYBASEVER=$PYBASEVER ARCH=$ARCH JOBS=4 CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
   - cp -v *.exe ${TRAVIS_BUILD_DIR}
   - popd
   - popd
   - git clone https://github.com/openturns/otsvm.git
   - pushd otsvm
-#   - git checkout v0.2
+  - git checkout v0.2
   - pushd distro/windows
-  - make PYBASEVER=$PYBASEVER ARCH=$ARCH JOBS=4 CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
   - cp -v *.exe ${TRAVIS_BUILD_DIR}
   - popd
   - popd
@@ -72,9 +109,12 @@ deploy:
     secure: JbTI9D1q5LuGrIvKNo6H/F1jPtq9pZNAlqglC0N3gEYQ4L+tmHfGOFxSRdsUaz7j/CgVTjmvKYtrAcYbTKjP7yN6RHS7dX9OvEWFpk3kyTwB9WUQhzew4ccT3sYjdtqlHqdtEcHOGBOA679xm7vIWyP2I7bjCus4gQXJFt53Bn40LZUiTwDg8kYjRleALrOlVetaMGnXRQIh27PlQDqSKUcJ7yyxHY1gkLQ4+gpTA3v2jstaMgI/+TZoqyQjYb66FWmQjOw/FP1ZF0xbTCm9nfXPNbf3Ha81uzQWu5eyJtrs/4kLv6bcNmurBHWxypGPWTJipBFp/129cJ+JgkOXHn/vmQtSupofknVwS5lt2rn36CHPpnD1377uT7WBtFDtuPn1raihqoj2o9jo3uv6aoFHr0qvLQPxnz3rt8SIbxPSGyQmYEc3u4ZTXwyU6i8ZGJJek7mEpuZZsHpQ1/KZjlX6V3ZMwoygE1o/LS4RCnGGZxBnf/6mFSBU8doC3amOHzqskBlotLowXMl++6I1lDCeSCRsUC2QkqsGG5KmYFJlStMzwhp/djdy2GcsIkip0eOh4g2b75iAEaLWBgclxvm013vTmjNdanir1gIBDvO2XmdifcpV24b7eUbg1vBy1vLkH4ZAFotRVehpPu7BnsA8nEDAsyJzf4O8nAbIRic=
   file:
     - ${TRAVIS_BUILD_DIR}/openturns-1.8rc1-py${PYBASEVER}-${ARCH}.exe
-    - ${TRAVIS_BUILD_DIR}/otmorris-0.0-py${PYBASEVER}-${ARCH}.exe
-    - ${TRAVIS_BUILD_DIR}/otrobopt-0.0-py${PYBASEVER}-${ARCH}.exe
-    - ${TRAVIS_BUILD_DIR}/otsvm-0.1i-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otfftw-0.3-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otlhs-1.3-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otmorris-0.1-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otpmml-1.3-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otrobopt-0.1-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otsvm-0.2-py${PYBASEVER}-${ARCH}.exe
   repo: openturns/build
   on:
     tags: true
