@@ -85,6 +85,14 @@ script:
   - cp -v *.exe ${TRAVIS_BUILD_DIR}
   - popd
   - popd
+  - git clone https://github.com/openturns/otlmr.git
+  - pushd otlmr
+  - git checkout v0.1
+  - pushd distro/windows
+  - make PYBASEVER=$PYBASEVER ARCH=$ARCH CHECK_OT=n OT_PREFIX=$PWD/../../../openturns/build-$ARCH-w64-mingw32/install
+  - cp -v *.exe ${TRAVIS_BUILD_DIR}
+  - popd
+  - popd
 
 env:
   matrix:
@@ -107,6 +115,7 @@ deploy:
     - ${TRAVIS_BUILD_DIR}/otpmml-1.3-py${PYBASEVER}-${ARCH}.exe
     - ${TRAVIS_BUILD_DIR}/otrobopt-0.1-py${PYBASEVER}-${ARCH}.exe
     - ${TRAVIS_BUILD_DIR}/otsvm-0.2-py${PYBASEVER}-${ARCH}.exe
+    - ${TRAVIS_BUILD_DIR}/otlmr-0.1-py${PYBASEVER}-${ARCH}.exe
   repo: openturns/build
   on:
     tags: true
