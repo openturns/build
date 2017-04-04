@@ -59,5 +59,6 @@ deploy:
     - ${TRAVIS_BUILD_DIR}/openturns-1.9rc1-py${PYBASEVER}-${ARCH}.exe
     - ${TRAVIS_BUILD_DIR}/openturns-mingw-1.9rc1-py${PYBASEVER}-${ARCH}.tar.bz2
   repo: openturns/build
+  skip_cleanup: true
   on:
     tags: true
