@@ -2,7 +2,7 @@
 
 user=$1
 
-release=1.9
+release=1.10
 for _basename in openturns-${release}
 do
   project=`echo "${_basename}" | cut -d '-' -f 1`
@@ -20,9 +20,6 @@ do
     done
   done
 done
-
-# upload
-scp /tmp/openturns-${release}.tar.gz /tmp/openturns-${release}*-py*-*.exe $1@frs.sourceforge.net:/home/frs/project/openturns/openturns/openturns-${release}
 
 sha256sum /tmp/*.tar.gz
 sha256sum /tmp/*.exe
