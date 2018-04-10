@@ -2,7 +2,7 @@
 
 user=$1
 
-release=1.10
+release=1.11rc1
 for _basename in openturns-${release}
 do
   project=`echo "${_basename}" | cut -d '-' -f 1`
