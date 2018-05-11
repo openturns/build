@@ -3,7 +3,7 @@ sudo: required
 
 env:
   global:
-    - VERSION=1.11rc1
+    - VERSION=1.11
 
 matrix:
   include:
