@@ -1,5 +1,8 @@
-language: cpp
+language: generic
 sudo: required
+
+services:
+  - docker
 
 env:
   global:
@@ -8,53 +11,17 @@ env:
 matrix:
   include:
     - env: PYBASEVER=2.7 ARCH=i686
-    - env: PYBASEVER=2.7 ARCH=x86_64
-    - env: PYBASEVER=3.5 ARCH=i686
-    - env: PYBASEVER=3.5 ARCH=x86_64
-    - env: PYBASEVER=3.6 ARCH=i686
-    - env: PYBASEVER=3.6 ARCH=x86_64
-
-addons:
-  apt:
-    packages:
-      - nsis
-      - cmake
-      - xvfb
-
-before_install:
-  - echo "VERSION=v${VERSION}"
-  - sudo add-apt-repository ppa:ubuntu-wine/ppa -y
-  - sudo dpkg --add-architecture i386 && sudo rm /etc/apt/sources.list.d/google-chrome.list
-  - sudo apt-get update -q
+    #- env: PYBASEVER=2.7 ARCH=x86_64
+    #- env: PYBASEVER=3.5 ARCH=i686
+    #- env: PYBASEVER=3.5 ARCH=x86_64
+    #- env: PYBASEVER=3.6 ARCH=i686
+    #- env: PYBASEVER=3.6 ARCH=x86_64
 
 install:
-  - sudo apt-get install wine1.8 -y
-  - sudo wget -N https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks -P /usr/bin
-  # latest swig
-  - git clone https://github.com/swig/swig.git
-  - pushd swig
-  - git checkout rel-3.0.12
-  - ./autogen.sh
-  - ./configure --without-alllang --prefix=/usr
-  - make -j2
-  - sudo make install
-  - popd
-
-before_script:
-  - wget http://downloads.sourceforge.net/openturns/openturns/openturns-1.10/dev/openturns-developers-windeps-1.10.tar.gz -P /tmp
+  - docker pull openturns/archlinux-mingw
 
 script:
-  - git clone https://github.com/openturns/openturns.git
-  - pushd openturns
-  - git checkout v${VERSION}
-  - pushd distro/windows
-  - tar xzf /tmp/openturns-developers-windeps-1.10.tar.gz
-  - make ot-module-installer PYBASEVER=$PYBASEVER ARCH=$ARCH JOBS_COTIRE=8
-  - sha256sum *.exe
-  - cp -v *.exe ${TRAVIS_BUILD_DIR}
-  - cp -v openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2 ${TRAVIS_BUILD_DIR}
-  - popd
-  - popd
+  - docker run -e MAKEFLAGS='-j2' -v `pwd`:/io openturns/archlinux-mingw /io/run_docker_build.sh ${VERSION} ${PYBASEVER} ${ARCH} `id -u` `id -g`
 
 deploy:
   provider: releases
