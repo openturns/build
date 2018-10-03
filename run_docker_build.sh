@@ -31,6 +31,10 @@ CXXFLAGS="-D_hypot=hypot" ${ARCH}-w64-mingw32-cmake \
   -DUSE_TBB=OFF \
   -DUSE_SPHINX=OFF \
   -DUSE_COTIRE=ON -DCOTIRE_MAXIMUM_NUMBER_OF_UNITY_INCLUDES="-j8" .
+
+# reduce memusage of swig wrappers
+find python/src/ -name flags.make|xargs sed -i "s|-O2 |-O1 |g"
+
 make install
 ${ARCH}-w64-mingw32-strip --strip-unneeded ${PREFIX}/bin/*.dll
 ${ARCH}-w64-mingw32-strip --strip-unneeded ${PREFIX}/Lib/site-packages/openturns/*.pyd
