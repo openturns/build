@@ -2,6 +2,14 @@
 
 set -xe
 
+usage()
+{
+  echo "Usage: $0 VERSION PYBASEVER ARCH [uid] [gid]"
+  exit 1
+}
+
+test $# -ge 3 || usage
+
 VERSION=$1
 PYBASEVER=$2
 PYMAJMIN=${PYBASEVER:0:1}${PYBASEVER:2:1}
