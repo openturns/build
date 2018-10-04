@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -xe
 
 VERSION=$1
 PYBASEVER=$2
@@ -42,6 +42,10 @@ cp ${MINGW_PREFIX}/bin/*.dll ${PREFIX}/bin
 rm ${PREFIX}/bin/libboost*.dll ${PREFIX}/bin/python*.dll
 
 cd distro/windows
+
+# FIXME: R PATH replacement issue
+sed -i "s|  value=|value_str=|g" openturns.nsi
+
 tar cjf openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2 --directory ${PREFIX}/.. `basename ${PREFIX}`
 sed "s|@version@|${VERSION}|g" OpenTURNSDoc.url.in > OpenTURNSDoc.url
 makensis -DOPENTURNS_PREFIX=${PREFIX} -DPRODUCT_VERSION=${VERSION} -DPYBASEVER=${PYBASEVER} -DPYBASEVER_NODOT=${PYMAJMIN} -DARCH=${ARCH} openturns.nsi
