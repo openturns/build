@@ -29,7 +29,7 @@ chmod a+rx ./${ARCH}-w64-mingw32-R-bin
 ./${ARCH}-w64-mingw32-R-bin --version
 
 PREFIX=$PWD/install
-CXXFLAGS="-D_hypot=hypot" ${ARCH}-w64-mingw32-cmake \
+${ARCH}-w64-mingw32-cmake \
   -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_INSTALL_LIBDIR=lib \
   -DPYTHON_INCLUDE_DIR=${MINGW_PREFIX}/include/python${PYMAJMIN} \
   -DPYTHON_LIBRARY=${MINGW_PREFIX}/lib/libpython${PYMAJMIN}.dll.a \
@@ -38,10 +38,9 @@ CXXFLAGS="-D_hypot=hypot" ${ARCH}-w64-mingw32-cmake \
   -DR_EXECUTABLE=${PWD}/${ARCH}-w64-mingw32-R-bin \
   -DUSE_TBB=OFF \
   -DUSE_SPHINX=OFF \
-  -DUSE_COTIRE=ON -DCOTIRE_MAXIMUM_NUMBER_OF_UNITY_INCLUDES="-j8" .
-
-# reduce memusage of swig wrappers
-find python/src/ -name flags.make|xargs sed -i "s|-O2 |-O1 |g"
+  -DUSE_COTIRE=ON -DCOTIRE_MAXIMUM_NUMBER_OF_UNITY_INCLUDES="-j16" \
+  -DSWIG_COMPILE_FLAGS="-O1" \
+  .
 
 make install
 ${ARCH}-w64-mingw32-strip --strip-unneeded ${PREFIX}/bin/*.dll
@@ -50,9 +49,6 @@ cp ${MINGW_PREFIX}/bin/*.dll ${PREFIX}/bin
 rm ${PREFIX}/bin/libboost*.dll ${PREFIX}/bin/python*.dll
 
 cd distro/windows
-
-# FIXME: R PATH replacement issue
-sed -i "s|  value=|value_str=|g" openturns.nsi
 
 tar cjf openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2 --directory ${PREFIX}/.. `basename ${PREFIX}`
 sed "s|@version@|${VERSION}|g" OpenTURNSDoc.url.in > OpenTURNSDoc.url
