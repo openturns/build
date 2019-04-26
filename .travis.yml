@@ -6,17 +6,12 @@ services:
 
 env:
   global:
-    - VERSION=1.12
+    - VERSION=1.13rc1
 
 matrix:
   include:
-    - env: PYBASEVER=2.7 ARCH=i686
     - env: PYBASEVER=2.7 ARCH=x86_64
-    - env: PYBASEVER=3.5 ARCH=i686
-    - env: PYBASEVER=3.5 ARCH=x86_64
-    - env: PYBASEVER=3.6 ARCH=i686
     - env: PYBASEVER=3.6 ARCH=x86_64
-    - env: PYBASEVER=3.7 ARCH=i686
     - env: PYBASEVER=3.7 ARCH=x86_64
 
 install:
