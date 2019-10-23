@@ -6,13 +6,14 @@ services:
 
 env:
   global:
-    - VERSION=1.13
+    - VERSION=1.14rc1
 
 matrix:
   include:
     - env: PYBASEVER=2.7 ARCH=x86_64
     - env: PYBASEVER=3.6 ARCH=x86_64
     - env: PYBASEVER=3.7 ARCH=x86_64
+    - env: PYBASEVER=3.8 ARCH=x86_64
 
 install:
   - docker pull openturns/archlinux-mingw
