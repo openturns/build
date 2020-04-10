@@ -4,19 +4,19 @@ set -xe
 
 usage()
 {
-  echo "Usage: $0 VERSION PYBASEVER ARCH [uid] [gid]"
+  echo "Usage: $0 VERSION PYBASEVER [uid] [gid]"
   exit 1
 }
 
-test $# -ge 3 || usage
+test $# -ge 2 || usage
 
 VERSION=$1
 PYBASEVER=$2
 PYMAJMIN=${PYBASEVER:0:1}${PYBASEVER:2:1}
-ARCH=$3
+ARCH=x86_64
 MINGW_PREFIX=/usr/${ARCH}-w64-mingw32
-uid=$4
-gid=$5
+uid=$3
+gid=$4
 
 cd
 curl -L https://github.com/openturns/openturns/archive/v${VERSION}.tar.gz | tar xz && cd openturns-${VERSION}
@@ -28,9 +28,8 @@ ${ARCH}-w64-mingw32-cmake \
   -DPYTHON_LIBRARY=${MINGW_PREFIX}/lib/libpython${PYMAJMIN}.dll.a \
   -DPYTHON_EXECUTABLE=/usr/bin/${ARCH}-w64-mingw32-python${PYMAJMIN}-bin \
   -DPYTHON_SITE_PACKAGES=Lib/site-packages \
-  -DUSE_TBB=OFF \
   -DUSE_SPHINX=OFF \
-  -DUSE_COTIRE=ON -DCOTIRE_MAXIMUM_NUMBER_OF_UNITY_INCLUDES="-j16" \
+  -DCMAKE_UNITY_BUILD=ON -DCMAKE_UNITY_BUILD_BATCH_SIZE=32 \
   -DSWIG_COMPILE_FLAGS="-O1" \
   .
 

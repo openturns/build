@@ -6,28 +6,27 @@ services:
 
 env:
   global:
-    - VERSION=1.14
+    - VERSION=1.15rc1
 
 matrix:
   include:
-    - env: PYBASEVER=2.7 ARCH=x86_64
-    - env: PYBASEVER=3.6 ARCH=x86_64
-    - env: PYBASEVER=3.7 ARCH=x86_64
-    - env: PYBASEVER=3.8 ARCH=x86_64
+    - env: PYBASEVER=3.6
+    - env: PYBASEVER=3.7
+    - env: PYBASEVER=3.8
 
 install:
   - docker pull openturns/archlinux-mingw
 
 script:
-  - docker run -e MAKEFLAGS='-j2' -v `pwd`:/io openturns/archlinux-mingw /io/run_docker_build.sh ${VERSION} ${PYBASEVER} ${ARCH} `id -u` `id -g`
+  - docker run -e MAKEFLAGS='-j2' -v `pwd`:/io openturns/archlinux-mingw /io/run_docker_build.sh ${VERSION} ${PYBASEVER} `id -u` `id -g`
 
 deploy:
   provider: releases
   api_key:
     secure: JbTI9D1q5LuGrIvKNo6H/F1jPtq9pZNAlqglC0N3gEYQ4L+tmHfGOFxSRdsUaz7j/CgVTjmvKYtrAcYbTKjP7yN6RHS7dX9OvEWFpk3kyTwB9WUQhzew4ccT3sYjdtqlHqdtEcHOGBOA679xm7vIWyP2I7bjCus4gQXJFt53Bn40LZUiTwDg8kYjRleALrOlVetaMGnXRQIh27PlQDqSKUcJ7yyxHY1gkLQ4+gpTA3v2jstaMgI/+TZoqyQjYb66FWmQjOw/FP1ZF0xbTCm9nfXPNbf3Ha81uzQWu5eyJtrs/4kLv6bcNmurBHWxypGPWTJipBFp/129cJ+JgkOXHn/vmQtSupofknVwS5lt2rn36CHPpnD1377uT7WBtFDtuPn1raihqoj2o9jo3uv6aoFHr0qvLQPxnz3rt8SIbxPSGyQmYEc3u4ZTXwyU6i8ZGJJek7mEpuZZsHpQ1/KZjlX6V3ZMwoygE1o/LS4RCnGGZxBnf/6mFSBU8doC3amOHzqskBlotLowXMl++6I1lDCeSCRsUC2QkqsGG5KmYFJlStMzwhp/djdy2GcsIkip0eOh4g2b75iAEaLWBgclxvm013vTmjNdanir1gIBDvO2XmdifcpV24b7eUbg1vBy1vLkH4ZAFotRVehpPu7BnsA8nEDAsyJzf4O8nAbIRic=
   file:
-    - ${TRAVIS_BUILD_DIR}/openturns-${VERSION}-py${PYBASEVER}-${ARCH}.exe
-    - ${TRAVIS_BUILD_DIR}/openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2
+    - ${TRAVIS_BUILD_DIR}/openturns-${VERSION}-py${PYBASEVER}-x86_64.exe
+    - ${TRAVIS_BUILD_DIR}/openturns-mingw-${VERSION}-py${PYBASEVER}-x86_64.tar.bz2
   repo: openturns/build
   skip_cleanup: true
   on:
