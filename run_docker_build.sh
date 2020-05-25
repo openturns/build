@@ -23,7 +23,7 @@ curl -L https://github.com/openturns/openturns/archive/v${VERSION}.tar.gz | tar 
 
 PREFIX=$PWD/install
 ${ARCH}-w64-mingw32-cmake \
-  -DCMAKE_INSTALL_PREFIX=${PREFIX} -DCMAKE_INSTALL_LIBDIR=lib \
+  -DCMAKE_INSTALL_PREFIX=${PREFIX} \
   -DPYTHON_INCLUDE_DIR=${MINGW_PREFIX}/include/python${PYMAJMIN} \
   -DPYTHON_LIBRARY=${MINGW_PREFIX}/lib/libpython${PYMAJMIN}.dll.a \
   -DPYTHON_EXECUTABLE=/usr/bin/${ARCH}-w64-mingw32-python${PYMAJMIN}-bin \
