@@ -1,6 +1,5 @@
-.. image:: https://travis-ci.org/openturns/build.svg
-    :target: https://travis-ci.org/openturns/build
-
+.. image:: https://github.com/openturns/build/actions/workflows/build.yml/badge.svg?branch=master
+    :target: https://github.com/openturns/build/actions/workflows/build.yml
 
 Scripts to build windows binaries.
 
