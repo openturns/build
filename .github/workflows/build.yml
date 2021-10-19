@@ -1,9 +1,6 @@
 name: Release
 
-on:
-  push:
-    tags:
-      - '*'
+on: push
 
 jobs:
   mingw:
@@ -16,33 +13,10 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build
         run: docker pull openturns/archlinux-mingw && docker run -e MAKEFLAGS='-j2' -v `pwd`:/io openturns/archlinux-mingw /io/run_docker_build.sh ${{ matrix.version }} ${{ matrix.pyver }} `id -u` `id -g`
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Upload exe
-        id: upload-release-asset1
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./openturns-${{ matrix.version }}-py${{ matrix.pyver }}-x86_64.exe
-          asset_name: openturns-${{ matrix.version }}-py${{ matrix.pyver }}-x86_64.exe
-          asset_content_type: application/vnd.microsoft.portable-executable
-      - name: Upload archive
-        id: upload-release-asset2
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./openturns-mingw-${{ matrix.version }}-py${{ matrix.pyver }}-x86_64.tar.bz2
-          asset_name: openturns-mingw-${{ matrix.version }}-py${{ matrix.pyver }}-x86_64.tar.bz2
-          asset_content_type: application/x-bzip2
+          files: |
+            openturns-${{ matrix.version }}-py${{ matrix.pyver }}-x86_64.exe
+            openturns-mingw-${{ matrix.version }}-py${{ matrix.pyver }}-x86_64.tar.bz2
