@@ -35,7 +35,7 @@ ${ARCH}-w64-mingw32-cmake \
 make install
 ${ARCH}-w64-mingw32-strip --strip-unneeded ${PREFIX}/bin/*.dll ${PREFIX}/Lib/site-packages/openturns/*.pyd
 cp ${MINGW_PREFIX}/bin/*.dll ${PREFIX}/bin
-rm ${PREFIX}/bin/libboost*.dll ${PREFIX}/bin/python*.dll
+rm ${PREFIX}/bin/{libboost,python,libgraphblas}*.dll
 
 cd distro/windows
 
