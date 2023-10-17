@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ['1.21']
-        pyver: ['3.8', '3.9', '3.10', '3.11']
+        version: ['1.21.1']
+        pyver: ['3.8', '3.9', '3.10', '3.11', '3.12']
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: docker pull openturns/archlinux-mingw && docker run -e MAKEFLAGS='-j2' -v `pwd`:/io openturns/archlinux-mingw /io/run_docker_build.sh ${{ matrix.version }} ${{ matrix.pyver }} `id -u` `id -g`
       - name: Release
