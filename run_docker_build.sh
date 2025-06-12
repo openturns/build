@@ -28,13 +28,14 @@ ${ARCH}-w64-mingw32-cmake \
   -DPython_LIBRARY=${MINGW_PREFIX}/lib/libpython${PYMAJMIN}.dll.a \
   -DPython_EXECUTABLE=/usr/bin/${ARCH}-w64-mingw32-python${PYMAJMIN}-bin \
   -DCMAKE_UNITY_BUILD=ON -DCMAKE_UNITY_BUILD_BATCH_SIZE=32 \
+  -DCMAKE_LINKER_TYPE=LLD \
   -DSWIG_COMPILE_FLAGS="-O1" \
   .
 
 make install
 ${ARCH}-w64-mingw32-strip --strip-unneeded ${PREFIX}/bin/*.dll ${PREFIX}/Lib/site-packages/openturns/*.pyd
 cp ${MINGW_PREFIX}/bin/*.dll ${PREFIX}/bin
-rm ${PREFIX}/bin/{libboost,python,libgraphblas}*.dll
+rm ${PREFIX}/bin/{python,libgraphblas}*.dll
 
 cd distro/windows
 
