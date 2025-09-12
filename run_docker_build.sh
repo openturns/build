@@ -15,8 +15,7 @@ PYBASEVER=$2
 PYMAJMIN=${PYBASEVER:0:1}${PYBASEVER:2}
 ARCH=x86_64
 MINGW_PREFIX=/usr/${ARCH}-w64-mingw32
-uid=$3
-gid=$4
+UID_GID=$3
 
 cd
 curl -L https://github.com/openturns/openturns/archive/v${VERSION}.tar.gz | tar xz && cd openturns-${VERSION}
@@ -42,8 +41,8 @@ cd distro/windows
 tar cjf openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2 --directory ${PREFIX}/.. `basename ${PREFIX}`
 makensis -DOPENTURNS_PREFIX=${PREFIX} -DPRODUCT_VERSION=${VERSION} -DPYBASEVER=${PYBASEVER} -DPYBASEVER_NODOT=${PYMAJMIN} -DARCH=${ARCH} openturns.nsi
 
-if test -n "${uid}" -a -n "${gid}"
+if test -n "${UID_GID}"
 then
-  sudo cp -v *.tar.bz2 *.exe /io
-  sudo chown ${uid}:${gid} /io/openturns-${VERSION}-py${PYBASEVER}-${ARCH}.exe /io/openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2
+  sudo chown ${UID_GID} *.tar.bz2 *.exe
+  sudo cp -v openturns-${VERSION}-py${PYBASEVER}-${ARCH}.exe openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2 /io
 fi

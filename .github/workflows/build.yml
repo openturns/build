@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build
-        run: docker pull openturns/archlinux-mingw && docker run -e MAKEFLAGS='-j4' -v `pwd`:/io openturns/archlinux-mingw /io/run_docker_build.sh ${{ matrix.version }} ${{ matrix.pyver }} `id -u` `id -g`
+        run: docker pull openturns/archlinux-mingw && docker run -e MAKEFLAGS='-j4' -v `pwd`:/io openturns/archlinux-mingw /io/run_docker_build.sh ${{ matrix.version }} ${{ matrix.pyver }} `id -u`:`id -g`
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
