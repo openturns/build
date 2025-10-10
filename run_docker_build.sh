@@ -29,6 +29,7 @@ ${ARCH}-w64-mingw32-cmake \
   -DCMAKE_UNITY_BUILD=ON -DCMAKE_UNITY_BUILD_BATCH_SIZE=32 \
   -DCMAKE_LINKER_TYPE=LLD \
   -DSWIG_COMPILE_FLAGS="-O1" \
+  -DBLA_VENDOR=Generic \
   .
 
 make install
@@ -43,6 +44,6 @@ makensis -DOPENTURNS_PREFIX=${PREFIX} -DPRODUCT_VERSION=${VERSION} -DPYBASEVER=$
 
 if test -n "${UID_GID}"
 then
-  sudo chown ${UID_GID} *.tar.bz2 *.exe
   sudo cp -v openturns-${VERSION}-py${PYBASEVER}-${ARCH}.exe openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2 /io
+  sudo chown ${UID_GID} /io/openturns-${VERSION}-py${PYBASEVER}-${ARCH}.exe /io/openturns-mingw-${VERSION}-py${PYBASEVER}-${ARCH}.tar.bz2
 fi
